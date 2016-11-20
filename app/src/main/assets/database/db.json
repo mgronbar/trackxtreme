@@ -1,0 +1,87 @@
+{ 
+ "lastposition":{
+  "rowid":"INTEGER PRIMARY KEY AUTOINCREMENT",
+  "lat":"NUMBER",
+  "lon":"NUMBER",
+  "zoom":"NUMBER"
+  },
+ "trackingstatus":{
+  "rowid":"INTEGER PRIMARY KEY AUTOINCREMENT",
+  "status":"TEXT",
+  "trackid":"NUMBER",
+  "trackrecordid":"NUMBER"
+  },
+ "track":{
+  "rowid":"INTEGER PRIMARY KEY AUTOINCREMENT",
+  "name":"TEXT",
+  "start":"NUMBER",
+  "end":"NUMBER",
+  "minLat":"NUMBER",
+  "maxLat":"NUMBER",
+  "minLon":"NUMBER",
+  "maxLon":"NUMBER",
+  "distance":"NUMBER",
+  "ascend":"NUMBER",
+  "descend":"NUMBER",
+  "record":"NUMBER",
+  "sport":"TEXT",
+  "type":"TEXT" 
+  },
+ "trackRecord":{
+  "rowid":"INTEGER PRIMARY KEY AUTOINCREMENT",
+  "trackId":"NUMBER",
+  "startTime":"INTEGER",
+  "time":"INTEGER",
+  "accuracy":"NUMBER",
+  "owner":"BOOLEAN",
+  "distance":"NUMBER",
+  "base":"BOOLEAN",
+  "status":"TEXT", 
+  "user":"TEXT",
+  "maxSpeed":"NUMBER",
+  "asc":"NUMBER",
+  "dsc":"NUMBER"
+  },
+ "trackPoint":{
+  "rowid":"INTEGER PRIMARY KEY AUTOINCREMENT",
+  "trackRecordId":"NUMBER",
+  "lat":"NUMBER",
+  "lon":"NUMBER",
+  "altitude":"NUMBER",
+  "accuracyHor":"NUMBER",
+  "accuracyVer":"NUMBER",
+  "timestamp":"DATE",
+  "speed":"NUMBER",
+  "round":"NUMBER DEFAULT 1"
+  },
+ "trackRecordRating":{
+  "rowid":"INTEGER PRIMARY KEY AUTOINCREMENT",
+  "trackId":"NUMBER",
+  "rateType":"TEXT",
+  "rateValue":"TEXT"
+  },
+ "place":{
+  "rowid":"INTEGER PRIMARY KEY AUTOINCREMENT",
+  "lat":"NUMBER",
+  "lon":"NUMBER",
+  "name":"TEXT",
+  "address":"TEXT",
+  "city":"TEXT",
+  "country":"TEXT",
+  "type":"TEXT"
+  },
+ "settings":{
+  "rowid":"INTEGER PRIMARY KEY AUTOINCREMENT",
+  "autoStartStart":"NUMBER DEFAULT 150",
+  "autoStartEnd":"NUMBER DEFAULT 150",
+  "gpsinterval":"NUMBER DEFAULT 10",
+  "gpsintervaltracking":"NUMBER DEFAULT 2"
+  },
+ "trackSettings":{
+  "rowid":"INTEGER PRIMARY KEY AUTOINCREMENT",
+  "trackId":"NUMBER",
+  "autoStartStart":"NUMBER",
+  "autoStartEnd":"NUMBER",
+  "color":"TEXT"
+  }
+ } 
