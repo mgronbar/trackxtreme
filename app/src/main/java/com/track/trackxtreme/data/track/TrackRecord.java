@@ -100,4 +100,8 @@ public class TrackRecord {
 
 	}
 
+	public float getDistance() {
+		return distance;
+	}
+
 }

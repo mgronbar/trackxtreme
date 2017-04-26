@@ -120,6 +120,9 @@ public class Track {
 		}
 	}
 
+	public void addDistancePoint(TrackPoint p1, TrackPoint p2){
+
+	}
 	public void setDistance(long distance) {
 		this.distance = distance;
 	}

@@ -12,6 +12,7 @@ import java.util.List;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.track.trackxtreme.RaceListener;
@@ -194,12 +195,19 @@ public class TrackXtremeOpenHelper extends OrmLiteSqliteOpenHelper {
 		values.put("accuracyVer", accuracyVer);
 		values.put("timestamp", timestamp);
 		values.put("round", round);
+        //new TrackPoint();
+
 		return getWritableDatabase().insert("trackPoint", null, values);
 	}
 
-	public long createNewTrackPoint(long trackid, long trackrecordid, Location location, boolean round) {
-		return createNewTrackPoint(trackid, trackrecordid, location.getLatitude(), location.getLongitude(),
-				location.getAltitude(), location.getAccuracy(), location.getAccuracy(), location.getTime(), round);
+	public long createNewTrackPoint(long trackid, long trackrecordid, Location location, boolean round) throws SQLException{
+        //Track track = getTrackDao().queryForId((int) trackid);
+        TrackRecord trackRecord = getTrackRecordDao().queryForId((int) trackrecordid);
+        TrackPoint tp =new TrackPoint(trackRecord, location);
+        return getTrackPointDao().create(tp);
+
+		//return createNewTrackPoint(trackid, trackrecordid, location.getLatitude(), location.getLongitude(),
+		//		location.getAltitude(), location.getAccuracy(), location.getAccuracy(), location.getTime(), round);
 
 	}
 
@@ -259,6 +267,7 @@ public class TrackXtremeOpenHelper extends OrmLiteSqliteOpenHelper {
 		ArrayList<TrackPoint> trackpoints = maplistener.getTrackpoints();
 
 		trackRecord.updateData(trackpoints, true);
+        track.setDistance((int)trackRecord.getDistance());
 
 		getTrackDao().create(track);
 		getTrackRecordDao().create(trackRecord);
@@ -279,4 +288,16 @@ public class TrackXtremeOpenHelper extends OrmLiteSqliteOpenHelper {
 
 	}
 
+	public int deleteTrack(TrackRecord item1) throws SQLException {
+		Track track = item1.getTrack();
+		ForeignCollection<TrackRecord> records = track.getRecords();
+
+		records.getDao().delete(item1);
+
+		if(records.size()==0){
+			getTrackDao().delete(track);
+		}
+        return records.size();
+
+	}
 }

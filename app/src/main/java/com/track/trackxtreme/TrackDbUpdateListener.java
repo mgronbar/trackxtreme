@@ -12,6 +12,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.sql.SQLException;
+
 public class TrackDbUpdateListener implements LocationListener {
 	/**
 		 * 
@@ -36,7 +38,11 @@ public class TrackDbUpdateListener implements LocationListener {
 
 	@Override
 	public void onLocationChanged(final Location location) {
-		mainActivity.getTrackXtremeOpenHelper().createNewTrackPoint(trackid, trackrecordid, location, false);
+		try {
+			mainActivity.getTrackXtremeOpenHelper().createNewTrackPoint(trackid, trackrecordid, location, false);
+		}catch (SQLException e){
+			System.out.println("SQL Exception creating trackpoint:"+e.getMessage());
+		}
 
 	}
 

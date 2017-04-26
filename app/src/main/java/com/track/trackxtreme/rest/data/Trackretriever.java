@@ -18,7 +18,7 @@ public class Trackretriever extends AsyncTask<String, Void, List<Track>> {
 
 	@Override
 	protected List<Track> doInBackground(String... arg0) {
-		LibraryResteasyClient client = new LibraryResteasyClient(mainActivity.getApplicationContext());
+		HttpRetriever client = new HttpRetriever(mainActivity.getApplicationContext());
 
 		try {
 			return client.getTracks();

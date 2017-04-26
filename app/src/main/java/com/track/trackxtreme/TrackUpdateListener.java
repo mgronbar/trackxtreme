@@ -78,14 +78,12 @@ public class TrackUpdateListener implements com.google.android.gms.location.Loca
 				@Override
 				public void onMapReady(GoogleMap map) {
 
-                    mainActivity.setLocationEnabled(map);
+                    //maplistener.setLocationEnabled(map);
 
 					map.clear();
 					mainActivity.updateMap(location, map,polylineOptions,Color.RED);
-					
-					trackpoints.add(new TrackPoint(trackrecord, location));
-					
-					trackrecord.getTrack().updateBounds(location);
+
+					addTrackPoint(location);
 //					locations.add(location);
 				}
 
@@ -95,9 +93,14 @@ public class TrackUpdateListener implements com.google.android.gms.location.Loca
 
 	}
 
+	protected void addTrackPoint(Location location) {
+		trackpoints.add(new TrackPoint(trackrecord, location));
+
+		trackrecord.getTrack().updateBounds(location);
+	}
 
 
-    private void drawtrack(Track track) {
+	private void drawtrack(Track track) {
 		final PolylineOptions polyline = new PolylineOptions();
 		Collection<TrackPoint> points = track.getRecords().iterator().next().getPoints();
 		for (TrackPoint trackPoint : points) {
@@ -147,4 +150,6 @@ public class TrackUpdateListener implements com.google.android.gms.location.Loca
 	public ArrayList<TrackPoint> getTrackpoints() {
 		return trackpoints;
 	}
+
+
 }
