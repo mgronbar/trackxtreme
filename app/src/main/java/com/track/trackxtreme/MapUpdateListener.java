@@ -124,6 +124,7 @@ public class MapUpdateListener implements LocationListener, GoogleApiClient.OnCo
         // TODO Auto-generated method stub
         System.out.println("MainActivity.onConnected()");
         requestLocation(this, 10);
+        mainActivity.addDashboardListener();
     }
 
     @Override

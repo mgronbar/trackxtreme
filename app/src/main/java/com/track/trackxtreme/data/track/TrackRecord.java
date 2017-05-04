@@ -64,13 +64,17 @@ public class TrackRecord {
 
 	@Override
 	public String toString() {
-		String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(time),
-				TimeUnit.MILLISECONDS.toMinutes(time) % TimeUnit.HOURS.toMinutes(1),
-				TimeUnit.MILLISECONDS.toSeconds(time) % TimeUnit.MINUTES.toSeconds(1));
-		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// dd/MM/yyyy
-		Date start = new Date(starttime);
-		String strDate = sdfDate.format(start);
-		return hms + " - " + strDate;
+		try {
+			String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(time),
+					TimeUnit.MILLISECONDS.toMinutes(time) % TimeUnit.HOURS.toMinutes(1),
+					TimeUnit.MILLISECONDS.toSeconds(time) % TimeUnit.MINUTES.toSeconds(1));
+			SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// dd/MM/yyyy
+			Date start = new Date(starttime);
+			String strDate = sdfDate.format(start);
+			return hms + " - " + strDate;
+		}catch (Exception e){
+			return "N/A";
+		}
 	}
 
 	public void updateData(ArrayList<TrackPoint> trackpoints, boolean updatetrackdistance) {

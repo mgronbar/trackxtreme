@@ -1,10 +1,10 @@
 package com.track.trackxtreme;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -20,33 +20,32 @@ import android.graphics.Color;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 
-public class RaceListener implements LocationListener {
+public class RaceListener extends AbstractTrackListener {
 	/**
 	 *
 	 */
-	private final MainActivity mainActivity;
-	private List<Location> locations;
-	private TrackRecord trackrecord;
-	private ArrayList<TrackPoint> trackpoints;
+
+
 	private PolylineOptions polylineOptions;
 	private TrackPoint first;
 	private TrackPoint last;
-	private TrackRecord raceRecord;
-	protected TrackStatus trackinStatus = TrackStatus.NONE;
+
+
 
 	public RaceListener(MainActivity mainActivity, Track track) {
-		this.mainActivity = mainActivity;
+		super(mainActivity,track);
 		TrackRecord trackRecord = track.getRecords().iterator().next();
-		Collection<TrackPoint> points = trackRecord.getPoints();
-		TrackPoint[] array = points.toArray(new TrackPoint[points.size()]);
-		first = array[0];
-		last = array[points.size() - 1];
 
-		raceRecord = new TrackRecord(track);
-		trackpoints = new ArrayList<TrackPoint>();
+		Collection<TrackPoint> points = trackRecord.getPoints();
+		if(points.size()>0){
+            TrackPoint[] array = points.toArray(new TrackPoint[points.size()]);
+            first = array[0];
+            last = array[points.size() - 1];
+        }
+
+
 		polylineOptions = new PolylineOptions();
 
-		locations = new ArrayList<Location>();
 		MapFragment mapFrag = (MapFragment) this.mainActivity.getFragmentManager().findFragmentById(R.id.map);
 
 	}
@@ -71,8 +70,10 @@ public class RaceListener implements LocationListener {
 					}
 					map.setMyLocationEnabled(true);
 
-					addRacePoint( location);
-					mainActivity.updateMap(location, map, polylineOptions, Color.RED);
+					if(addTrackPoint( location, false)) {
+                        mainActivity.updateMap(location, map, polylineOptions, Color.RED);
+                    }
+
 
 				}
 
@@ -82,51 +83,85 @@ public class RaceListener implements LocationListener {
 		}
 
 	}
-	protected void addLastRacePoint(Location location){
-		trackpoints.add(new TrackPoint(raceRecord, location));
-		trackinStatus = TrackStatus.FINISH;
-	}
 
-	protected void addRacePoint(Location location) {
-		if (trackinStatus.ordinal() < TrackStatus.FINISH.ordinal()) {
-            if (first.getLocation().distanceTo(location) < 40) {
-                trackinStatus = TrackStatus.TRACKING;
-            } else if (last.getLocation().distanceTo(location) < 40) {
-                trackinStatus = TrackStatus.TRACKING_REVERSE;
+    @Override
+    public void startTracking(Location location) {
+        setTrackStatus(TrackStatus.WAITING);
+        addTrackPoint(location, false);
+        //trackpoints.add(new TrackPoint(trackRecord, location));
+    }
+
+    @Override
+    public void stopTracking(Location lastLocation) {
+        if (getTrackStatus().ordinal() >= TrackStatus.RACING.ordinal()) {
+
+            //setTrackStatus(TrackStatus.FINISH);
+            trackpoints.add(new TrackPoint(trackRecord, lastLocation));
+
+            //stopRacing(racelistener.getTrackRecord());
+            try {
+                mainActivity.getTrackXtremeOpenHelper().saveNewTrackRecord(this);
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
+        }
+        setTrackStatus(TrackStatus.FINISH);
+        mainActivity.stopTracking();
+
+
+    }
+
+    @Override
+	public boolean addTrackPoint(Location location, boolean force) {
+        float accuracy = location.getAccuracy();
+        if(accuracy>25 && !force){
+            return false;
+        }
+        updateDashboard(location);
+
+		if (getTrackStatus() == TrackStatus.WAITING) {
+            if (first.getLocation().distanceTo(location) < 40) {
+                setTrackStatus(TrackStatus.RACING);
+            } else if (last.getLocation().distanceTo(location) < 40) {
+                setTrackStatus(TrackStatus.RACING_REVERSE);
+            }else{
+                return false;
+            }
+            trackpoints.add(new TrackPoint(trackRecord, location));
+            return false;
+
         } else {
 
 
-            if (isFinished(location, TrackStatus.TRACKING, last)
-                    || isFinished(location, TrackStatus.TRACKING_REVERSE, first) || trackinStatus == TrackStatus.FINISH) {
-                trackinStatus = TrackStatus.FINISH;
-                mainActivity.stopRacing(raceRecord);
-				return;
+            if (isFinished(location, TrackStatus.RACING, last)
+                    || isFinished(location, TrackStatus.RACING_REVERSE, first) ) {
+                //setTrackStatus(TrackStatus.FINISH);
+                //mainActivity.stopRacing();
+                stopTracking(location);
+
+            }else{
+                trackpoints.add(new TrackPoint(trackRecord, location));
+
             }
 
         }
-		trackpoints.add(new TrackPoint(raceRecord, location));
-	}
-
-	private boolean isFinished(final Location location, TrackStatus status, TrackPoint endPoint) {
-
-		return trackinStatus == status && endPoint.getLocation().distanceTo(location) < 40;
-	}
-
-	public List<Location> getPoints() {
-		return locations;
+        return true;
 
 	}
 
-	public Track getTrack() {
-		return raceRecord.getTrack();
+
+
+    private boolean isFinished(final Location location, TrackStatus status, TrackPoint endPoint) {
+
+		return getTrackStatus() == status && endPoint.getLocation().distanceTo(location) < 40;
 	}
 
-	public TrackRecord getTrackRecord() {
-		return raceRecord;
-	}
 
-	public ArrayList<TrackPoint> getTrackpoints() {
-		return trackpoints;
-	}
+
+    @Override
+    public int getName() {
+
+        return R.string.button_race;
+    }
 }

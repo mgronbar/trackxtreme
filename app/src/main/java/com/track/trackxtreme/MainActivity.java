@@ -1,18 +1,14 @@
 package com.track.trackxtreme;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.drive.Drive;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -24,8 +20,8 @@ import com.track.trackxtreme.data.TrackStatus;
 import com.track.trackxtreme.data.TrackXtremeOpenHelper;
 import com.track.trackxtreme.data.track.Track;
 import com.track.trackxtreme.data.track.TrackPoint;
-import com.track.trackxtreme.data.track.TrackRecord;
 import com.track.trackxtreme.iu.RecordActivity;
+import com.track.trackxtreme.iu.UiTools;
 import com.track.trackxtreme.rest.data.Trackretriever;
 
 import android.app.ActionBar.LayoutParams;
@@ -37,19 +33,18 @@ import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 
-import android.os.Build;
 import android.os.Bundle;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -57,16 +52,18 @@ public class MainActivity extends Activity {
 
     public static final int LOCATION_REQUEST_CODE = 123;
     private MapUpdateListener listener;
-    private TrackUpdateListener maplistener;
+    private TrackUpdater maplistener;
     //private GoogleApiClient mGoogleApiClient;
     private TrackXtremeOpenHelper trackXtremeOpenHelper;
-    private PolylineOptions polylineOptions;
-    private RaceListener racelistener;
+    //private PolylineOptions polylineOptions;
+    //private TrackUpdater racelistener;
+    Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        timer = new Timer();
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -76,11 +73,13 @@ public class MainActivity extends Activity {
 
         if (listener == null) {
             listener = new MapUpdateListener(this);
+
             //mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext()).addApi(LocationServices.API)
             //        .addConnectionCallbacks(this).addOnConnectionFailedListener(this).build();
+            maplistener = new TrackUpdateListener(this, new Track());
 
             trackXtremeOpenHelper = new TrackXtremeOpenHelper(getApplicationContext());
-            polylineOptions = new PolylineOptions();
+            //polylineOptions = new PolylineOptions();
             //
             final MapFragment mapFrag = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
             mapFrag.getMapAsync(new OnMapReadyCallback() {
@@ -93,9 +92,26 @@ public class MainActivity extends Activity {
                     map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
                     map.animateCamera(CameraUpdateFactory.zoomTo(18f));
 
+
                 }
             });
         }
+    }
+
+    public void addDashboardListener(){
+        listener.requestLocation(new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                TextView speed = (TextView) findViewById(R.id.dashboard_speed);
+                speed.setText(location.getSpeed()+"km/h");
+
+                TextView lat = (TextView) findViewById(R.id.dashboard_lat);
+                lat.setText(""+location.getLatitude()+", "+location.getLongitude());
+
+
+
+            }
+        }, 15);
     }
     // registerForContextMenu(findViewById(R.id.buttons));
 
@@ -125,26 +141,31 @@ public class MainActivity extends Activity {
         Button b = (Button) findViewById(R.id.start);
         b.setText(R.string.button_start);
         removeButtons(layout);
+        maplistener = new TrackUpdateListener(this, new Track());
         // getTrackXtremeOpenHelper().dropall();
     }
 
+
+
     public void startButton(View view) {
 
-        polylineOptions = new PolylineOptions();
-        Button button = (Button) findViewById(R.id.start);
-        if (button.getText().equals(getString(R.string.button_start))) {
-            button.setText(R.string.button_stop);
+        //maplistener=getMapListener();
+        //polylineOptions = new PolylineOptions();
+        //Button button = (Button) findViewById(R.id.start);
+        if(maplistener.getTrackStatus().ordinal()<=TrackStatus.FINISH.ordinal()){
             startTracking();
-
-        } else if (button.getText().equals(getString(R.string.button_race))) {
-            startRacing();
-        } else {
-            button.setText(R.string.button_start);
-
+        }else{
             stopTracking();
         }
-        new Button(getApplicationContext());
 
+        showDashBoard();
+
+    }
+
+
+
+    private TrackUpdater getMapListener() {
+        return maplistener;
     }
 
     public void webButton(View view) {
@@ -193,8 +214,8 @@ public class MainActivity extends Activity {
                             @Override
                             public void onClick(View v) {
 
-                                if (racelistener != null) {
-                                    openList(racelistener);
+                                if (maplistener != null) {
+                                    openList(maplistener);
                                 }
 
                             }
@@ -222,7 +243,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void openList(RaceListener rListener) {
+    private void openList(TrackUpdater rListener) {
         Intent intent = new Intent(this, RecordActivity.class);
         intent.putExtra("TRACK_ID", rListener.getTrack().getId());
         startActivity(intent);
@@ -248,80 +269,46 @@ public class MainActivity extends Activity {
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, map.getCameraPosition().zoom));
     }
 
-    private void stopTracking() {
+    public void stopTracking() {
         Location lastLocation = listener.getLastLocation();
-        if (racelistener != null && racelistener.trackinStatus.ordinal() >= TrackStatus.TRACKING.ordinal()) {
-            listener.stopMapUpdates(racelistener);
-            racelistener.trackinStatus=TrackStatus.FINISH;
-            racelistener.addRacePoint(lastLocation);
-            //stopRacing(racelistener.getTrackRecord());
+        listener.stopMapUpdates(maplistener);
+        if(maplistener.getTrackStatus()!=TrackStatus.FINISH)
+            maplistener.stopTracking(lastLocation);
 
-
-        } else {
-            listener.stopMapUpdates(maplistener);
-            maplistener.addTrackPoint(lastLocation);
-            try {
-                trackXtremeOpenHelper.saveNewTrack(maplistener);
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
         enableButtons(true);
 
-
-
-
-
     }
-
-    private void startTracking() {
+    public void startTracking() {
         Location lastLocation = listener.getLastLocation();
-        maplistener = new TrackUpdateListener(this, new Track(lastLocation));
-        listener.requestLocation(maplistener, 1);
+        listener.requestLocation(maplistener,1);
+        maplistener.startTracking(lastLocation);
+
         enableButtons(false);
 
-
     }
 
+
     private void enableButtons(boolean enabled) {
+
         List<Integer> list = Arrays.asList(R.id.newmarker_clear, R.id.search);
         for (Integer i:list
              ) {
             Button button = (Button) findViewById(i);
             button.setEnabled(enabled);
         }
-
-    }
-
-
-    private void startRacing() {
-
-        LocationRequest mLocationRequest = getLocationRequest(1);
-        listener.requestLocation(racelistener, 1);
-
-        Button button = (Button) findViewById(R.id.start);
-        button.setText(R.string.button_stop);
-        enableButtons(false);
-
-    }
-
-    public void stopRacing(TrackRecord racekRecord) {
-
-        listener.stopMapUpdates(racelistener);
-        Location lastLocation = listener.getLastLocation();
-        racelistener.addLastRacePoint(lastLocation);
-
-        try {
-            trackXtremeOpenHelper.saveNewTrackRecord(racelistener);
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        Button startButton = (Button) findViewById(R.id.start);
+        if(enabled){
+            startButton.setText(maplistener.getName());
+        }else{
+            startButton.setText(R.string.button_stop);
         }
-        Button button = (Button) findViewById(R.id.start);
-        button.setText(R.string.button_race);
-        enableButtons(true);
+
     }
+
+    private void showDashBoard(){
+        findViewById(R.id.dashboard_track).setVisibility(View.VISIBLE);
+    }
+
 
     private LocationRequest getLocationRequest(long interval) {
         LocationRequest mLocationRequest = new LocationRequest();
@@ -348,7 +335,8 @@ public class MainActivity extends Activity {
 
                     Button startButton = (Button) findViewById(R.id.start);
                     startButton.setText(R.string.button_race);
-                    racelistener = new RaceListener(MainActivity.this, track);
+
+                    maplistener = new RaceListener(MainActivity.this, track);
                     mapFrag.getMapAsync(new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
@@ -395,6 +383,8 @@ public class MainActivity extends Activity {
     protected void onRestart() {
         super.onRestart();
         LinearLayout layout = (LinearLayout) findViewById(R.id.track_buttons);
+        RadioGroup group = (RadioGroup) findViewById(R.id.radio_buttons);
+
         if(layout.getChildCount()>0){
             searchButton();
         }
@@ -411,4 +401,46 @@ public class MainActivity extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
+
+    public void setDashboardDistance(double distance) {
+        TextView distanceView =(TextView)findViewById(R.id.track_distance);
+        distanceView.setText(UiTools.getDistance(distance));
+    }
+    public void setDashboardTime(long time) {
+        TextView timeView =(TextView)findViewById(R.id.track_time);
+
+        timeView.setText(UiTools.getTime(time));
+        if(time!=0) {
+            double dist = maplistener.getDistance();
+            String kmh =UiTools.getAvg(dist,time);
+
+            TextView avg = (TextView) findViewById(R.id.track_avg_speed);
+            avg.setText(kmh);
+        }
+
+    }
+
+
+    public void startTimer() {
+        timer=new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+
+                mHandler.obtainMessage(1).sendToTarget();
+            }
+        }, 0, 1000);
+    }
+
+    public void stopTimer(){
+        timer.purge();
+        timer.cancel();
+    }
+
+
+    public Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            setDashboardTime(maplistener.timeElapsed());
+
+        }
+    };
 }

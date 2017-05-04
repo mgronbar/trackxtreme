@@ -48,8 +48,12 @@ public class Track {
 
 	}
 
-	public Track(Location location) {
-		this();
+	public Track(Location location){
+        setStartLocation(location);
+    }
+
+	public void setStartLocation(Location location) {
+
 		startLocation = location;
 		updateBounds(location);
 

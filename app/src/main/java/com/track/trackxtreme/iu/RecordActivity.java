@@ -36,14 +36,15 @@ public class RecordActivity extends Activity {
             setContentView(R.layout.activity_record);
 
             Track track = trackXtremeOpenHelper.getTrackDao().queryForId(object);
+            if(track.getRecords().iterator().hasNext()) {
+                long distance = (long) track.getRecords().iterator().next().getDistance();
 
-            long distance = (long)track.getRecords().iterator().next().getDistance();
+                TextView distanceView = (TextView) findViewById(R.id.track_distance);
+                distanceView.setText(UiTools.getDistance(distance));
 
-            TextView distanceView= (TextView) findViewById(R.id.track_distance);
-            distanceView.setText(distance+"m");
-
-            TextView countView= (TextView) findViewById(R.id.track_count);
-            countView.setText(track.getRecords().size()+"");
+                TextView countView = (TextView) findViewById(R.id.track_count);
+                countView.setText(track.getRecords().size() + "");
+            }
 
 
             records = new ArrayList(track.getRecords());

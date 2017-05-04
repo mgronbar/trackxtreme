@@ -17,6 +17,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.track.trackxtreme.RaceListener;
 import com.track.trackxtreme.TrackUpdateListener;
+import com.track.trackxtreme.TrackUpdater;
 import com.track.trackxtreme.data.track.Track;
 import com.track.trackxtreme.data.track.TrackPoint;
 import com.track.trackxtreme.data.track.TrackRecord;
@@ -110,95 +111,95 @@ public class TrackXtremeOpenHelper extends OrmLiteSqliteOpenHelper {
 
 	}
 
-	private void createDatabases(SQLiteDatabase db, JsonReader json) throws IOException {
-		json.beginObject();
-		while (json.hasNext()) {
-			String dbName = json.nextName();
-			System.out.println(dbName);
+//	private void createDatabases(SQLiteDatabase db, JsonReader json) throws IOException {
+//		json.beginObject();
+//		while (json.hasNext()) {
+//			String dbName = json.nextName();
+//			System.out.println(dbName);
+//
+//			String createSql = "CREATE TABLE IF NOT EXISTS ";
+//			createSql += dbName + "(";
+//			List<String[]> columns = readTables(json);
+//			for (Iterator iterator = columns.iterator(); iterator.hasNext();) {
+//				String[] fields = (String[]) iterator.next();
+//
+//				createSql += fields[0] + ' ' + fields[1];
+//				// createSql+=')'
+//				if (iterator.hasNext())
+//					createSql += ",";
+//			}
+//			createSql += " )";
+//			System.out.println(createSql);
+//			db.execSQL(createSql);
+//		}
+//		json.endObject();
+//	}
 
-			String createSql = "CREATE TABLE IF NOT EXISTS ";
-			createSql += dbName + "(";
-			List<String[]> columns = readTables(json);
-			for (Iterator iterator = columns.iterator(); iterator.hasNext();) {
-				String[] fields = (String[]) iterator.next();
+//	private List<String[]> readTables(JsonReader json) throws IOException {
+//		json.beginObject();
+//		List<String[]> columns = new ArrayList<String[]>();
+//		while (json.hasNext()) {
+//			String[] column = new String[3];
+//			column[0] = json.nextName();
+//			column[1] = json.nextString();
+//
+//			columns.add(column);
+//		}
+//		json.endObject();
+//		return columns;
+//	}
+//
+//	private long createNewTrack(String name, TrackType type, String sport, TrackStatus status, double lat, double lon,
+//			boolean round) {
+//
+//		// writableDatabase.execSQL("INSERT INTO track");
+//
+//		// ContentValues placeValues = new ContentValues();
+//		// placeValues.put("lat", lat);
+//		// placeValues.put("lon", lon);
+//		// placeValues.put("name", "lat:" + lat + " lon:" + lon);
+//		// long start = getWritableDatabase().insert("place", null,
+//		// placeValues);
+//
+//		ContentValues values = new ContentValues();
+//		values.put("name", name);
+//		values.put("type", type.name());
+//		values.put("sport", sport);
+//		// values.put("status", status.name());
+//		values.put("sport", sport);
+//		// values.put("start", start);
+//		// if (round) {
+//		// values.put("end", start);
+//		// }
+//		return getWritableDatabase().insert("track", null, values);
+//
+//	}
 
-				createSql += fields[0] + ' ' + fields[1];
-				// createSql+=')'
-				if (iterator.hasNext())
-					createSql += ",";
-			}
-			createSql += " )";
-			System.out.println(createSql);
-			db.execSQL(createSql);
-		}
-		json.endObject();
-	}
+//	private long createNewTrackRecord(long trackid, TrackStatus status, boolean base) {
+//		ContentValues values = new ContentValues();
+//		values.put("trackId", trackid);
+//		values.put("startTime", System.currentTimeMillis());
+//		values.put("status", status.name());
+//		values.put("base", base);
+//
+//		return getWritableDatabase().insert("trackRecord", null, values);
+//	}
 
-	private List<String[]> readTables(JsonReader json) throws IOException {
-		json.beginObject();
-		List<String[]> columns = new ArrayList<String[]>();
-		while (json.hasNext()) {
-			String[] column = new String[3];
-			column[0] = json.nextName();
-			column[1] = json.nextString();
-
-			columns.add(column);
-		}
-		json.endObject();
-		return columns;
-	}
-
-	private long createNewTrack(String name, TrackType type, String sport, TrackStatus status, double lat, double lon,
-			boolean round) {
-
-		// writableDatabase.execSQL("INSERT INTO track");
-
-		// ContentValues placeValues = new ContentValues();
-		// placeValues.put("lat", lat);
-		// placeValues.put("lon", lon);
-		// placeValues.put("name", "lat:" + lat + " lon:" + lon);
-		// long start = getWritableDatabase().insert("place", null,
-		// placeValues);
-
-		ContentValues values = new ContentValues();
-		values.put("name", name);
-		values.put("type", type.name());
-		values.put("sport", sport);
-		// values.put("status", status.name());
-		values.put("sport", sport);
-		// values.put("start", start);
-		// if (round) {
-		// values.put("end", start);
-		// }
-		return getWritableDatabase().insert("track", null, values);
-
-	}
-
-	private long createNewTrackRecord(long trackid, TrackStatus status, boolean base) {
-		ContentValues values = new ContentValues();
-		values.put("trackId", trackid);
-		values.put("startTime", System.currentTimeMillis());
-		values.put("status", status.name());
-		values.put("base", base);
-
-		return getWritableDatabase().insert("trackRecord", null, values);
-	}
-
-	private long createNewTrackPoint(long trackid, long trackrecordid, double lat, double lon, double altitude,
-			double accuracyHor, double accuracyVer, long timestamp, boolean round) {
-		ContentValues values = new ContentValues();
-		values.put("trackrecordid", trackrecordid);
-		values.put("lat", lat);
-		values.put("lon", lon);
-		values.put("altitude", altitude);
-		values.put("accuracyHor", accuracyHor);
-		values.put("accuracyVer", accuracyVer);
-		values.put("timestamp", timestamp);
-		values.put("round", round);
-        //new TrackPoint();
-
-		return getWritableDatabase().insert("trackPoint", null, values);
-	}
+//	private long createNewTrackPoint(long trackid, long trackrecordid, double lat, double lon, double altitude,
+//			double accuracyHor, double accuracyVer, long timestamp, boolean round) {
+//		ContentValues values = new ContentValues();
+//		values.put("trackrecordid", trackrecordid);
+//		values.put("lat", lat);
+//		values.put("lon", lon);
+//		values.put("altitude", altitude);
+//		values.put("accuracyHor", accuracyHor);
+//		values.put("accuracyVer", accuracyVer);
+//		values.put("timestamp", timestamp);
+//		values.put("round", round);
+//        //new TrackPoint();
+//
+//		return getWritableDatabase().insert("trackPoint", null, values);
+//	}
 
 	public long createNewTrackPoint(long trackid, long trackrecordid, Location location, boolean round) throws SQLException{
         //Track track = getTrackDao().queryForId((int) trackid);
@@ -269,13 +270,13 @@ public class TrackXtremeOpenHelper extends OrmLiteSqliteOpenHelper {
 		trackRecord.updateData(trackpoints, true);
         track.setDistance((int)trackRecord.getDistance());
 
-		getTrackDao().create(track);
-		getTrackRecordDao().create(trackRecord);
+		getTrackDao().update(track);
+		getTrackRecordDao().update(trackRecord);
 		getTrackPointDao().create(trackpoints);
 
 	}
 
-	public void saveNewTrackRecord(RaceListener racelistener) throws SQLException {
+	public void saveNewTrackRecord(TrackUpdater racelistener) throws SQLException {
 		Track track = racelistener.getTrack();
 		TrackRecord trackRecord = racelistener.getTrackRecord();
 		ArrayList<TrackPoint> trackpoints = racelistener.getTrackpoints();
