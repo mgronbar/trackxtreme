@@ -196,7 +196,7 @@ public class MainActivity extends Activity {
                     LinearLayout layout = (LinearLayout) findViewById(R.id.track_buttons);
                     removeButtons(layout);
 
-                    for (int i = 0; i < searchTracks.size() && i < colorlist.size(); i++) {
+                    for (int i = 0; i < searchTracks.size() ; i++) {
                         System.out.println("test" + i);
                         Track track = searchTracks.get(i);
                         int color = colorlist.get(i % colorlist.size());

@@ -107,23 +107,30 @@
         android:gravity="bottom"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/track_buttons"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
-            android:gravity="start"
-            android:orientation="vertical">
-
-            <RadioGroup
-                android:id="@+id/radio_buttons"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/track_buttons"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_gravity="bottom"
+
+                android:gravity="start"
+                android:orientation="vertical">
+
+                <RadioGroup
+                    android:id="@+id/radio_buttons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
 
 
-        </LinearLayout>
+            </LinearLayout>
+
+
+        </ScrollView>
 
         <LinearLayout
             android:id="@+id/control_buttons"

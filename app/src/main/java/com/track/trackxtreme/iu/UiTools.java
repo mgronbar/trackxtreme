@@ -1,5 +1,7 @@
 package com.track.trackxtreme.iu;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,7 +24,7 @@ public class UiTools {
 
     public static String getDistance(double distance) {
         if (distance < 1000) {
-            return distance + " m";
+            return round(distance,0) + " m";
         }
 
         return round(distance/1000f,2) + " km";
@@ -32,4 +34,18 @@ public class UiTools {
         double dec=Math.pow(10,decimals);
         return ((int) (num.doubleValue() * dec)) / dec;
     }
+
+    public static String getDate(long date){
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// dd/MM/yyyy
+        Date start = new Date(date);
+        return sdfDate.format(start);
+
+    }
+    public static String getHours(long date){
+        SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss");// dd/MM/yyyy
+        Date start = new Date(date);
+        return sdfDate.format(start);
+
+    }
+
 }

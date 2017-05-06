@@ -63,9 +63,9 @@ public class RecordActivity extends Activity {
             // Third parameter - ID of the TextView to which the data is written
             // Forth - the Array of data
 
-            ArrayAdapter<TrackRecord> adapter = new ArrayAdapter<TrackRecord>(this, android.R.layout.simple_list_item_1,
-                    android.R.id.text1, records);
-
+            //ArrayAdapter<TrackRecord> adapter = new ArrayAdapter<TrackRecord>(this, android.R.layout.simple_list_item_1,
+            //        android.R.id.text1, records);
+            TrackRecordAdapter adapter = new TrackRecordAdapter(this,records);
             // Assign adapter to ListView
             listView.setAdapter(adapter);
         } catch (SQLException e) {
@@ -107,6 +107,13 @@ public class RecordActivity extends Activity {
             }
 
             return true;
+        }else if(id==R.id.action_settings){
+            item1.roundTrim();
+            try {
+                trackXtremeOpenHelper.getTrackRecordDao().update(item1);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return super.onOptionsItemSelected(item);
     }

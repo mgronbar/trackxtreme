@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 import com.j256.ormlite.dao.ForeignCollection;
@@ -77,30 +78,61 @@ public class TrackRecord {
 		}
 	}
 
-	public void updateData(ArrayList<TrackPoint> trackpoints, boolean updatetrackdistance) {
-		starttime = trackpoints.get(0).getLocation().getTime();
-		System.out.println(starttime);
-		time = 0L;
-		System.out.println("size:" + trackpoints.size());
-		if (trackpoints.size() > 0) {
-			time = trackpoints.get(trackpoints.size() - 1).getLocation().getTime() - starttime;
-		}
-		distance = 0.0f;
-		maxspeed = trackpoints.get(0).getLocation().getSpeed();
+	public void updateData(Collection<TrackPoint> trackpoints, boolean updatetrackdistance) {
+		if(trackpoints.size()>2) {
+            Iterator<TrackPoint> iterator = trackpoints.iterator();
+            TrackPoint first = iterator.next();
+			starttime = first.getLocation().getTime();
+			System.out.println(starttime);
+			time = 0L;
+			System.out.println("size:" + trackpoints.size());
 
-		for (int i = 1; i < trackpoints.size(); i++) {
-			Location location = trackpoints.get(i).getLocation();
-			distance += trackpoints.get(i - 1).getLocation().distanceTo(location);
+			distance = 0.0f;
+			maxspeed = first.getLocation().getSpeed();
+            TrackPoint prev = first;
+			while (iterator.hasNext()) {
+                TrackPoint next = iterator.next();
+                Location location = next.getLocation();
+				distance += prev.getLocation().distanceTo(location);
 
-			if (maxspeed < location.getSpeed()) {
-				maxspeed = location.getSpeed();
+				if (maxspeed < location.getSpeed()) {
+					maxspeed = location.getSpeed();
+				}
+                prev=next;
 			}
-		}
-		if (updatetrackdistance) {
-			track.setDistance((int) distance);
+            time = prev.getLocation().getTime() - starttime;
+			if (updatetrackdistance) {
+				track.setDistance((int) distance);
+			}
+
+			track.updateRecordTime(time);
 		}
 
-		track.updateRecordTime(time);
+	}
+
+	public void roundTrim(){
+
+		Iterator<TrackPoint> iterator = points.iterator();
+		TrackPoint prev =iterator.next();
+		TrackPoint start = prev;
+		float d=0;
+		boolean done=false;
+		while (iterator.hasNext()) {
+			TrackPoint tp = iterator.next();
+			Location location = tp.getLocation();
+			d += prev.getLocation().distanceTo(location);
+
+			if(d>200 && location.distanceTo(start.getLocation())<50){
+				System.out.println("ROUND .......");
+				done=true;
+			}
+			if(done){
+				iterator.remove();
+			}
+			prev=tp;
+		}
+        updateData(points,true);
+
 
 	}
 
@@ -108,4 +140,15 @@ public class TrackRecord {
 		return distance;
 	}
 
+    public Long getTime() {
+        return time;
+    }
+
+    public Long getStarttime() {
+        return starttime;
+    }
+
+    public float getMaxspeed() {
+        return maxspeed;
+    }
 }
