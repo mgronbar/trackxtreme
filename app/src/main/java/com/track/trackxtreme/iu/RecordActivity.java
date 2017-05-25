@@ -36,15 +36,24 @@ public class RecordActivity extends Activity {
             setContentView(R.layout.activity_record);
 
             Track track = trackXtremeOpenHelper.getTrackDao().queryForId(object);
+            int size = track.getRecords().size();
+            TextView countView = (TextView) findViewById(R.id.track_count);
+
+            countView.setText("Count: "+size);
             if(track.getRecords().iterator().hasNext()) {
                 long distance = (long) track.getRecords().iterator().next().getDistance();
 
                 TextView distanceView = (TextView) findViewById(R.id.track_distance);
-                distanceView.setText(UiTools.getDistance(distance));
+                distanceView.setText("Distance:"+UiTools.getDistance(distance));
 
-                TextView countView = (TextView) findViewById(R.id.track_count);
-                countView.setText(track.getRecords().size() + "");
             }
+            TextView recordTime = (TextView) findViewById(R.id.track_fastest_time);
+            recordTime.setText("Record:"+UiTools.getTime(track.getRecordtime()));
+
+            TextView trackAvg = (TextView) findViewById(R.id.track_record_avg_time);
+            trackAvg.setText("Avg:"+ UiTools.getTime(totalTime(track)/size));
+
+
 
 
             records = new ArrayList(track.getRecords());
@@ -108,13 +117,27 @@ public class RecordActivity extends Activity {
 
             return true;
         }else if(id==R.id.action_settings){
-            item1.roundTrim();
+            item1.roundTrim(true);
             try {
                 trackXtremeOpenHelper.getTrackRecordDao().update(item1);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        } else if (id == R.id.action_trim){
+            item1.updateData(true);
+            trackXtremeOpenHelper.update(item1);// getTrackRecordDao().update(item1);
+
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public long totalTime(Track track){
+        long totalTime=0;
+        for (TrackRecord trackRecord :track.getRecords()){
+            totalTime+=trackRecord.getTime();
+        }
+        return totalTime;
+
     }
 }

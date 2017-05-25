@@ -6,7 +6,6 @@ import android.location.Location;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
 
@@ -20,9 +19,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-public class MapUpdateListener implements LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
+public class MapUpdateListener implements LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     private GoogleApiClient mGoogleApiClient;
     /**
@@ -50,7 +48,7 @@ public class MapUpdateListener implements LocationListener, GoogleApiClient.OnCo
             mapFrag.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(GoogleMap map) {
-                    MapUpdateListener.this.setLocationEnabled(map);
+                    MapUpdateListener.this.setLocationEnabled(map, true);
                     LatLng latLng = new LatLng(location.getLatitude(), location
                             .getLongitude());
 
@@ -89,7 +87,7 @@ public class MapUpdateListener implements LocationListener, GoogleApiClient.OnCo
                 return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             }
             throw new RuntimeException("no location service available");
-        }else {
+        } else {
             return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         }
     }
@@ -104,17 +102,17 @@ public class MapUpdateListener implements LocationListener, GoogleApiClient.OnCo
         System.out.println("MainActivity.onConnectionFailed()");
     }
 
-    public void setLocationEnabled(GoogleMap map) {
+    public void setLocationEnabled(GoogleMap map, boolean enable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //User has previously accepted this permission
 
             if (ActivityCompat.checkSelfPermission(mainActivity.getApplicationContext(),
                     android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                map.setMyLocationEnabled(true);
+                map.setMyLocationEnabled(enable);
             }
         } else {
             //Not in api-23, no need to prompt
-            map.setMyLocationEnabled(true);
+            map.setMyLocationEnabled(enable);
         }
     }
 
@@ -123,6 +121,19 @@ public class MapUpdateListener implements LocationListener, GoogleApiClient.OnCo
         // TODO Auto-generated method stub
         // TODO Auto-generated method stub
         System.out.println("MainActivity.onConnected()");
+
+        MapFragment mapFrag = (MapFragment) this.mainActivity.getFragmentManager().findFragmentById(R.id.map);
+        if (mapFrag != null) {
+            mapFrag.getMapAsync(new OnMapReadyCallback() {
+
+                @Override
+                public void onMapReady(GoogleMap map) {
+                    map.getUiSettings().setRotateGesturesEnabled(false);
+
+                }
+            });
+        }
+
         requestLocation(this, 10);
         mainActivity.addDashboardListener();
     }
@@ -163,6 +174,6 @@ public class MapUpdateListener implements LocationListener, GoogleApiClient.OnCo
     }
 
     public void startMapUpdates(LocationListener maplistener) {
-        requestLocation(maplistener,10);
+        requestLocation(maplistener, 10);
     }
 }

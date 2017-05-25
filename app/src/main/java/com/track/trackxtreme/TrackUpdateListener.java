@@ -42,15 +42,8 @@ public class TrackUpdateListener extends AbstractTrackListener  {
         super(mainActivity, track);
 
 
-
         polylineOptions = new PolylineOptions();
 
-
-
-        //locations = new ArrayList<Location>();
-
-//		mapFrag.getMap().addPolyline(polylineOptions);
-//		mapFrag.getMap().clear();
 
     }
 
@@ -89,7 +82,6 @@ public class TrackUpdateListener extends AbstractTrackListener  {
         mapFrag.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-//                googleMap.addPolyline(polylineOptions);
                 googleMap.clear();
                 TrackUpdateListener.this.mainActivity.updateMap(getTrack().getStartLocation(), googleMap, polylineOptions, Color.RED);
             }

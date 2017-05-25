@@ -1,5 +1,9 @@
 package com.track.trackxtreme.iu;
 
+import android.graphics.Rect;
+import android.view.View;
+import android.view.ViewGroup;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +40,7 @@ public class UiTools {
     }
 
     public static String getDate(long date){
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// dd/MM/yyyy
+        SimpleDateFormat sdfDate = new SimpleDateFormat("dd.MM.yyyy");// dd/MM/yyyy
         Date start = new Date(date);
         return sdfDate.format(start);
 
@@ -46,6 +50,27 @@ public class UiTools {
         Date start = new Date(date);
         return sdfDate.format(start);
 
+    }
+
+    public static View findViewAt(ViewGroup viewGroup, int x, int y) {
+        for(int i = 0; i < viewGroup.getChildCount(); i++) {
+            View child = viewGroup.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                View foundView = findViewAt((ViewGroup) child, x, y);
+                if (foundView != null && foundView.isShown()) {
+                    return foundView;
+                }
+            } else {
+                int[] location = new int[2];
+                child.getLocationOnScreen(location);
+                Rect rect = new Rect(location[0], location[1], location[0] + child.getWidth(), location[1] + child.getHeight());
+                if (rect.contains(x, y)) {
+                    return child;
+                }
+            }
+        }
+
+        return null;
     }
 
 }

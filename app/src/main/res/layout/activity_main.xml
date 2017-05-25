@@ -11,167 +11,79 @@
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <LinearLayout
-        android:id="@+id/info_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:gravity="bottom"
-
-        android:orientation="vertical">
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/dashboard_location"
-            android:layout_width="fill_parent"
+            android:id="@+id/dashboar_layout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="8sp"
+            android:layout_gravity="top"
+            android:gravity="bottom">
 
-            android:layout_marginLeft="52sp"
-            android:layout_marginRight="52sp"
-            android:layout_marginTop="8sp"
-            android:background="#5533b5e5"
-            android:gravity="top"
+            <include layout="@layout/info" />
+            <include layout="@layout/dashboard" />
 
-
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/dashboard_speed"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10sp"
-                android:text="0 km/h" />
-
-            <TextView
-                android:id="@+id/dashboard_lat"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20sp"
-                android:text="N/A, N/A" />
-
-            <TextView
-                android:id="@+id/dashboard_lon"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10sp"
-                android:text="" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/dashboard_track"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="#5533b5e5"
-            android:gravity="top"
-            android:orientation="horizontal"
-            android:visibility="invisible">
-
-            <TextView
-                android:id="@+id/track_time"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/activity_horizontal_margin"
-                android:text="0:00:00"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-            <TextView
-                android:id="@+id/track_distance"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/activity_horizontal_margin"
-                android:text="0 m" />
-
-            <TextView
-                android:id="@+id/track_avg_speed"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/activity_horizontal_margin"
-
-                android:text="0 km/h" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/buttons"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="bottom"
-        android:orientation="vertical">
-
-        <ScrollView
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dashboar_layout"
+            android:layout_weight="1">
+            <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/track_buttons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-
-                android:gravity="start"
-                android:orientation="vertical">
-
-                <RadioGroup
-                    android:id="@+id/radio_buttons"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/track_buttons"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:layout_gravity="center"
+                    android:background="#5533b5e5"
+                    android:gravity="start"
+                    android:orientation="vertical">
+
+                    <RadioGroup
+                        android:id="@+id/radio_buttons"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
 
 
-            </LinearLayout>
+                </LinearLayout>
 
 
-        </ScrollView>
+            </ScrollView>
 
-        <LinearLayout
-            android:id="@+id/control_buttons"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="bottom"
-            android:gravity="bottom"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:onClick="startButton"
-                android:text="@string/button_start" />
-
-            <Button
-                android:id="@+id/newmarker_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="clearButton"
-                android:text="@string/button_clear" />
-
-            <Button
-                android:id="@+id/search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="searchButton"
-                android:text="@string/button_search" />
-
-            <Button
-                android:id="@+id/searchWeb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="webButton"
-                android:text="@string/button_web" />
         </LinearLayout>
-    </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+        </RelativeLayout>
+
+        <!--<LinearLayout-->
+            <!---->
+            <!--android:orientation="vertical"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true">-->
+
+            <!--<include layout="@layout/main_buttons" />-->
+        <!--</LinearLayout>-->
+    </RelativeLayout>
+
+
+
+
+
 
 </FrameLayout>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dashboard_location"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layout_marginBottom="8sp"
+
+    android:layout_marginLeft="52sp"
+    android:layout_marginRight="52sp"
+    android:layout_marginTop="8sp"
+    android:background="#5533b5e5"
+    android:gravity="top"
+
+
+    android:orientation="horizontal"
+    tools:showIn="@layout/activity_main">
+
+    <TextView
+        android:id="@+id/dashboard_speed"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
+        android:text="0 km/h" />
+
+    <TextView
+        android:id="@+id/dashboard_lat"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20sp"
+        android:text="N/A, N/A" />
+
+    <TextView
+        android:id="@+id/dashboard_lon"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
+        android:text="" />
+</LinearLayout>

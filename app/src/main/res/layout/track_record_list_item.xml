@@ -1,28 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/track_record_item"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/activity_horizontal_margin"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/track_record_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_weight="0.15"
-        android:text="1."
-        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/track_record_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_weight="0.20"
-        android:text="5:06:34" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/track_record_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1."
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+            <TextView
+                android:id="@+id/track_record_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_weight="1"
+                android:text="5:06:34" />
+
+            <TextView
+                android:id="@+id/track_record_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_weight="1"
+                android:text="01.01.2017" />
+
+            <TextView
+                android:id="@+id/track_record_date_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_weight="1"
+                android:text="12:01" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/track_record_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10.25 km"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/track_record_max_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Max: 10km/h"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/track_record_avg_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Avg:15.6 km/h"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -33,23 +88,11 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
 
-            <TextView
-                android:id="@+id/track_record_max_speed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/track_record_avg_speed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="15.6 km/h" />
         </LinearLayout>
 
         <LinearLayout
@@ -61,14 +104,8 @@
 
 
             <TextView
-                android:id="@+id/track_record_distance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="10.25 km" />
-
-            <TextView
                 android:id="@+id/track_record_sum"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="50" />
         </LinearLayout>
@@ -80,22 +117,6 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_weight="1"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/track_record_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_weight="0.20"
-            android:text="01.01.2017" />
-
-        <TextView
-            android:id="@+id/track_record_date_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_weight="0.20"
-            android:text="01.01.2017" />
 
     </LinearLayout>
 

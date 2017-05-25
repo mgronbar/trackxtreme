@@ -58,4 +58,7 @@ public class TrackPoint {
 		return loc;
 	}
 
+	public float getAccuracy() {
+		return accuracy;
+	}
 }

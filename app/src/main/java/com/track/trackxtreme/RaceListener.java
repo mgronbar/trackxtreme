@@ -86,6 +86,7 @@ public class RaceListener extends AbstractTrackListener {
 
     @Override
     public void startTracking(Location location) {
+
         setTrackStatus(TrackStatus.WAITING);
         addTrackPoint(location, false);
         //trackpoints.add(new TrackPoint(trackRecord, location));

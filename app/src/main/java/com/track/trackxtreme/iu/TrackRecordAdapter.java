@@ -18,8 +18,8 @@ import java.util.List;
  */
 
 public class TrackRecordAdapter extends ArrayAdapter<TrackRecord> {
-    public TrackRecordAdapter(Context context,List<TrackRecord> objects) {
-        super(context, R.layout.track_record_list_item,objects);
+    public TrackRecordAdapter(Context context, List<TrackRecord> objects) {
+        super(context, R.layout.track_record_list_item, objects);
     }
 
     @NonNull
@@ -34,23 +34,24 @@ public class TrackRecordAdapter extends ArrayAdapter<TrackRecord> {
         TrackRecord tr = getItem(position);
         TextView distance = (TextView) convertView.findViewById(R.id.track_record_distance);
 
-        TextView max = (TextView) convertView.findViewById(R.id.track_record_distance);
-        max.setText(tr.getMaxspeed()+"km/h");
+        TextView max = (TextView) convertView.findViewById(R.id.track_record_max_speed);
+        max.setText("Max: "+tr.getMaxspeed() + " km/h");
 
         float dist = tr.getDistance();
-        distance.setText(UiTools.getDistance(dist));
+        distance.setText("Dist: "+UiTools.getDistance(dist));
         Long time = tr.getTime();
         TextView timeView = (TextView) convertView.findViewById(R.id.track_record_time);
         timeView.setText(UiTools.getTime(time));
 
         TextView avgView = (TextView) convertView.findViewById(R.id.track_record_avg_speed);
-        avgView.setText(UiTools.getAvg(dist,time));
+        avgView.setText("Avg: "+UiTools.getAvg(dist, time));
 
         TextView dateView = (TextView) convertView.findViewById(R.id.track_record_date);
-        dateView.setText(UiTools.getDate(tr.getStarttime()));
-        TextView dateHourView = (TextView) convertView.findViewById(R.id.track_record_date_time);
-        dateView.setText(UiTools.getTime(tr.getStarttime()));
-
+        if(tr.getStarttime()!=null) {
+            dateView.setText(UiTools.getDate(tr.getStarttime()));
+            TextView dateHourView = (TextView) convertView.findViewById(R.id.track_record_date_time);
+            dateHourView.setText(UiTools.getHours(tr.getStarttime()) + "-" + UiTools.getHours(tr.getStarttime() + time));
+        }
 
 
         return convertView;

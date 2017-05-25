@@ -17,5 +17,10 @@
     <string name="pref_port_key">localhost</string>
     <string name="pref_port_default">localhost</string>
     <string name="button_track">track</string>
+    <string name="button_part">PART</string>
+    <string name="button_endstart">EndStart</string>
+    <string name="action_trim">Trim</string>
+    <string name="button_other">Other</string>
+    <string name="button_import">Import</string>
 
 </resources>

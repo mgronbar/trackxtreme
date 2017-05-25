@@ -2,12 +2,17 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "com.track.trackxtreme"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 23
+        jackOptions {
+            additionalParameters("jack.incremental": "true")
+            enabled true
+        }
+
     }
 
     buildTypes {
@@ -17,8 +22,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        incremental true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    dexOptions {
+
+
+        javaMaxHeapSize "2048M" // used by the out-of-process Jack, ignored if running in-process
+
     }
 
 
