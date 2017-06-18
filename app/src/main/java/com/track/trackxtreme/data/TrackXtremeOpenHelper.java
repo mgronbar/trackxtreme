@@ -274,10 +274,14 @@ public class TrackXtremeOpenHelper extends OrmLiteSqliteOpenHelper {
         Track track = racelistener.getTrack();
         TrackRecord trackRecord = racelistener.getTrackRecord();
         ArrayList<TrackPoint> trackpoints = racelistener.getTrackpoints();
-        trackRecord.setTrackPoints(trackpoints);
+
+
+
+
+
+        //trackRecord.setTrackPoints(trackpoints);
 
         trackRecord.updateData(trackpoints,false);
-
         getTrackDao().update(track);
         getTrackRecordDao().create(trackRecord);
         getTrackPointDao().create(trackpoints);

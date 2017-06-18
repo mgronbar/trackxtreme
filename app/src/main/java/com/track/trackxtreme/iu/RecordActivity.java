@@ -124,7 +124,7 @@ public class RecordActivity extends Activity {
                 e.printStackTrace();
             }
         } else if (id == R.id.action_trim){
-            item1.updateData(true);
+            item1.updateData(item1.getPoints(),true);
             trackXtremeOpenHelper.update(item1);// getTrackRecordDao().update(item1);
 
 

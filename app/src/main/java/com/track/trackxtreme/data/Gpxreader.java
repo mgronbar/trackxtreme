@@ -38,8 +38,8 @@ public class Gpxreader {
             }
             String name = parser.getName();
             // Starts by looking for the entry tag
-            if (name.equals("entry")) {
-                entries.add(readEntry(parser));
+            if (name.equals("trk")) {
+                entries.add(readTrk(parser));
             } else {
                 skip(parser);
             }
@@ -47,8 +47,8 @@ public class Gpxreader {
         return entries;
     }
 
-    private Object readEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, ns, "entry");
+    private Object readTrk(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "trk");
         String title = null;
         String summary = null;
         String link = null;
@@ -57,8 +57,8 @@ public class Gpxreader {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("trk")) {
-                title = readTitle(parser);
+            if (name.equals("trkseg")) {
+                title = readSeg(parser);
             } else if (name.equals("summary")) {
                 summary = readSummary(parser);
             } else if (name.equals("link")) {
@@ -71,7 +71,7 @@ public class Gpxreader {
     }
 
     // Processes title tags in the feed.
-    private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private String readSeg(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "title");
         String title = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "title");

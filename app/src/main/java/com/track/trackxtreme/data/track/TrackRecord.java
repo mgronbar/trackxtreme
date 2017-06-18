@@ -54,6 +54,7 @@ public class TrackRecord {
 	public TrackRecord(Track track) {
 		this.track = track;
 
+
 	}
 
 	public Collection<TrackPoint> getPoints() {
@@ -89,7 +90,7 @@ public class TrackRecord {
             starttime = first.getLocation().getTime();
             System.out.println(starttime);
             time = 0L;
-            System.out.println("size:" + points.size());
+            System.out.println("size:" + trackpoints.size());
 
             distance = 0.0f;
             maxspeed = first.getLocation().getSpeed();
